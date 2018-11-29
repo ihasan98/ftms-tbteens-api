@@ -46,7 +46,22 @@ public class TimesheetController {
     //Get timesheet from job and employee id
     @RequestMapping("/get/timesheet_by_employee_and_job_id")
     public List<Timesheet> getTimesheetByEmployeeAndJobId(@Valid @RequestBody int employee_id, int job_id){
-        return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);
+        return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);}
+
+    // Approve the timesheet.
+    @PostMapping("/approve")
+    public void approve(Long timesheetId) {
+        Timesheet ts = timesheetRepository.getOne(timesheetId);
+        ts.setApprovalStatus("Approved");
+        timesheetRepository.save(ts);
+    }
+
+    // Reject the timesheet.
+    @PostMapping("/reject")
+    public void reject(Long timesheetId) {
+        Timesheet ts = timesheetRepository.getOne(timesheetId);
+        ts.setApprovalStatus("Rejected");
+        timesheetRepository.save(ts);
     }
 
 }
