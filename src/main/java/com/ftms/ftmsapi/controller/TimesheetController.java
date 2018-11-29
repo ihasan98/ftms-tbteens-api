@@ -38,7 +38,7 @@ public class TimesheetController {
     }
 
     //Get jobs from timesheet id
-    @PostMapping("/get/job_by_timesheet_id")
+    @RequestMapping("/get/job_by_timesheet_id")
     public List<Job> getJobsByTimesheetId(@Valid @RequestBody int timesheet_id){
         return jobRepository.findJobsFromTimesheetId(timesheet_id);
     }
