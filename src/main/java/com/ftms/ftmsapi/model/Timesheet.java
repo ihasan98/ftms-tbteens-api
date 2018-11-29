@@ -32,7 +32,7 @@ public class Timesheet implements Serializable{
     }
 
     /**
-     * @param EmployeeId the EmployeeId to set
+     * @param employeeId the EmployeeId to set
      */
     public void setEmployeeId(Long employeeId) {
         this.employeeId = employeeId;
