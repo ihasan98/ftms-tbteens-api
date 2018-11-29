@@ -3,65 +3,18 @@ package com.ftms.ftmsapi.payload;
 import javax.validation.constraints.*;
 
 public class SignUpRequest {
-    @NotBlank
-    private String firstname;
-
-    @NotBlank
-    private String lastname;
-
-    @NotBlank
-    @Size(max = 40)
-    @Email
-    private String email;
-
-    @NotBlank
-    private String number;
-
-    @NotBlank
-    private String role;
+    private Long id;
 
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
 
-    public String getFirstname() {
-        return firstname;
+    public Long getId() {
+        return id;
     }
 
-    public void setFirstname(String name) {
-        this.firstname = name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPassword() {

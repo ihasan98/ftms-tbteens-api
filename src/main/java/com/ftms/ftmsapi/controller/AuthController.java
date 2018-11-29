@@ -15,12 +15,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -37,6 +36,18 @@ public class AuthController {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity getUser(@PathVariable Long id) {
+        try {
+            User user = userRepository.getOne(id);
+            System.out.println("Found user");
+            return new ResponseEntity<Object>(user, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity(new ApiResponse(false, "User not found!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -56,25 +67,21 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
-                    HttpStatus.BAD_REQUEST);
-        }
+//        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+//            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
+//                    HttpStatus.BAD_REQUEST);
+//        }
+//
+//        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+//            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
+//                    HttpStatus.BAD_REQUEST);
+//        }
 
         // Creating user's account
-        User user = new User(signUpRequest.getFirstname(), signUpRequest.getLastname(),
-                signUpRequest.getEmail(), signUpRequest.getNumber(),
-                signUpRequest.getPassword(), signUpRequest.getRole());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
+        User user = userRepository.getOne(signUpRequest.getId());
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        user.setActive(true);
         User result = userRepository.save(user);
-
         return new ResponseEntity<Object>(result, HttpStatus.OK);
     }
 }

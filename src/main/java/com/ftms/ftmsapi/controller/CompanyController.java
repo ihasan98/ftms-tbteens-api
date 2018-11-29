@@ -15,26 +15,26 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/companies")
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class CompanyController {
     @Autowired
     CompanyRepository companyRepository;
 
     // Get all companies
-    @GetMapping("/companies")
+    @GetMapping("")
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
     }
 
     // Create a new company
-    @PostMapping("/companies")
+    @PostMapping("")
     public Company createCompany(@Valid @RequestBody Company company) {
         return companyRepository.save(company);
     }
 
     // Delete a company
-    @DeleteMapping("/companies/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteEmployee (@PathVariable Long id) {
         try {
             Company company = companyRepository.getOne(id);
@@ -45,12 +45,11 @@ public class CompanyController {
         }
     }
 
-    @PutMapping("/companies/{id}")
+    @PutMapping("/{id}")
     public List<String> editCompany (@PathVariable Long id, @RequestParam String name,
                                      @RequestParam String logo, @RequestParam String email,
                                      @RequestParam String phone) {
         ArrayList<String> value = new ArrayList<>();
-        value.add("Hello!");
         try {
             Company findCompany = companyRepository.getOne(id);
             findCompany.setName(name);
