@@ -43,4 +43,10 @@ public class TimesheetController {
         return jobRepository.findJobsFromTimesheetId(timesheet_id);
     }
 
+    //Get timesheet from job and employee id
+    @RequestMapping("/get/timesheet_by_employee_and_job_id")
+    public List<Timesheet> getTimesheetByEmployeeAndJobId(@Valid @RequestBody int employee_id, int job_id){
+        return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);
+    }
+
 }
