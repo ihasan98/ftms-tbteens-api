@@ -15,6 +15,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
 
     @Query(value = FIND_JOBS_FROM_TIMESHEET_ID, nativeQuery = true)
-    public List<Job> findJobsFromTimesheetId(int timesheet_id);
+    public List<Job> findJobsFromTimesheetId(Long timesheet_id);
 
 }

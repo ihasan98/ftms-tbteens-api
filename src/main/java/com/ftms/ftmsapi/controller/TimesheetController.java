@@ -39,13 +39,13 @@ public class TimesheetController {
 
     //Get jobs from timesheet id
     @RequestMapping("/get/job_by_timesheet_id")
-    public List<Job> getJobsByTimesheetId(@Valid @RequestBody int timesheet_id){
+    public List<Job> getJobsByTimesheetId(@Valid @RequestBody Long timesheet_id){
         return jobRepository.findJobsFromTimesheetId(timesheet_id);
     }
 
     //Get timesheet from job and employee id
     @RequestMapping("/get/timesheet_by_employee_and_job_id")
-    public List<Timesheet> getTimesheetByEmployeeAndJobId(@Valid @RequestBody int employee_id, int job_id){
+    public List<Timesheet> getTimesheetByEmployeeAndJobId(@Valid @RequestBody Long employee_id, Long job_id){
         return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);}
 
     // Approve the timesheet.

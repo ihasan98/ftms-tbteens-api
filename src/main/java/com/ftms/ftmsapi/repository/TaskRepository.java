@@ -10,5 +10,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     String JobEmployeeQuery = "SELECT * FROM task WHERE job = ?1 AND employee = ?2";
 
     @Query(value = JobEmployeeQuery, nativeQuery = true)
-    List<Task> getByJobAndEmployee(int job_id, int employee_id);
+    List<Task> getByJobAndEmployee(Long job_id, Long employee_id);
 }
