@@ -11,7 +11,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-
+//For the timesheet creation in jobassignment do not touch
 @Entity
 public class Selection implements Serializable{
     // INSTANCE FIELDS

@@ -96,6 +96,7 @@ public class JobController {
     @PutMapping("/jobsassign")
     void assignJob(@Valid @RequestBody Selection selection) {
         Timesheet timesheet = new Timesheet();
+        
         timesheet.setJobId(selection.getJob().getId());
         timesheet.setEmployeeId(selection.getEmployee().getId());
         timesheet.setApprovalStatus("Not reviewed");

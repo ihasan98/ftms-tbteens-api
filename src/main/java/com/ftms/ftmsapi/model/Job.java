@@ -19,10 +19,11 @@ public class Job implements Serializable{
 
     @NotBlank
     private String description;
-
+    private String siteName;
+    
     private Company company;
 
-    private String siteName;
+    
 
     // GETTERS/SETTERS
     public String getJobTitle() {
