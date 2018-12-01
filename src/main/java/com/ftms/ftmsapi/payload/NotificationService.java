@@ -26,7 +26,7 @@ public class NotificationService {
 
     public NotificationService() {}
 
-    public ResponseEntity<?> updateUserNotification(Notification notification) {
+    private ResponseEntity<?> updateUserNotification(Notification notification) {
         Notification savedNotification = save(notification);
         if (savedNotification == null) {
             return new ResponseEntity<Object>(new ApiResponse(false, "Notification not updated."),
@@ -49,15 +49,17 @@ public class NotificationService {
         ArrayList<Notification> notifications = (ArrayList<Notification>) notificationRepository.findAll();
         ArrayList<Notification> notificationOfUser = new ArrayList<>();
         for (Notification notification: notifications) {
-            if (notification.getUser().getId().equals(id)){
+            if (notification.getUserID().equals(id)){
                 notificationOfUser.add(notification);
             }
         }
         return notificationOfUser;
     }
 
-    public Notification createNotification(String message, User user, String type, Job job) {
-        return new Notification(message, new Date(), user, type, job);
+    public Notification createNotification(String message, Long userID, String type, Long jobID) {
+        Notification notification = new Notification(message, new Date(), userID, type, jobID);
+        updateUserNotification(notification);
+        return notification;
     }
 
     public NotificationRepository getRepository() {

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,14 +42,14 @@ public class NotificationController {
 
     // Create the notification for an employee notifying him/her that a job has been assigned to him/her
     @PostMapping("/jobassigned")
-    public ResponseEntity<?> createNewNotificationJobAssign(String info) {
+    public ResponseEntity<?> createNewNotificationJobAssign(@Valid @RequestBody String info) {
         ArrayList<Object> validationResult = validateInfo(info);
         return getJobNotification(validationResult, ") has been assigned to you.", "JOB_ASSIGN");
     }
 
     // Create the notification for an employee notifying him/her that a job has been removed from him/her
     @PostMapping("/jobdeleted")
-    public ResponseEntity<?> createNewNotificationJobDeleted(String info) {
+    public ResponseEntity<?> createNewNotificationJobDeleted(@Valid @RequestBody String info) {
         ArrayList<Object> validationResult = validateInfo(info);
         return getJobNotification(validationResult, ") has been removed from your queue.", "JOB_DELETE");
     }
@@ -62,13 +63,13 @@ public class NotificationController {
             // If there are goodies inside:
 
             // at 0: the user, at 1: the job, at 2: the job name, at 3: the HTTP response
-            User user = (User) validationResult.get(0);
-            Job job = (Job) validationResult.get(1);
+            Long userID = (Long) validationResult.get(0);
+            Long jobID = (Long) validationResult.get(1);
             String jobName = (String) validationResult.get(2);
             String message = "A new job (" + jobName + action;
 
             // create the notification
-            notificationService.createNotification(message, user, notifType, job);
+            notificationService.createNotification(message, userID, notifType, jobID);
 
             // return http response
             return (ResponseEntity) validationResult.get(3);
@@ -79,12 +80,12 @@ public class NotificationController {
 
     // Create a new notification for an employee notifying him/her that a job's timesheet has been reviewed
     @PostMapping("/jobreviewed")
-    public ResponseEntity<?> createNewNotificationJobReviewed(String info) {
+    public ResponseEntity<?> createNewNotificationJobReviewed(@Valid @RequestBody String info) {
         // Similar to the above function
         ArrayList<Object> validationResult = validateInfo(info);
         if (validationResult.size() > 1) {
-            User user = (User) validationResult.get(0);
-            Job job = (Job) validationResult.get(1);
+            Long userID = (Long) validationResult.get(0);
+            Long jobID = (Long) validationResult.get(1);
             JSONObject parser = new JSONObject(info);
 
             // the JSON for a job-review notification also has a component indicating
@@ -99,7 +100,7 @@ public class NotificationController {
             String type = "JOB_REVIEW";
 
             // create the notification
-            notificationService.createNotification(message, user, type, job);
+            notificationService.createNotification(message, userID, type, jobID);
 
             // return http response
             return (ResponseEntity) validationResult.get(3);
@@ -116,12 +117,10 @@ public class NotificationController {
         // Get the values from the keys
         Long userID = Long.parseLong(notification.get("userid").toString());
         Long jobID = Long.parseLong(notification.get("jobid").toString());
-        User user;
-        Job job;
 
         // Make sure that the user exists (look for the user by ID)
         try {
-            user = userRepository.getOne(userID);
+            userRepository.getOne(userID);
         } catch (EntityNotFoundException error) {
             result.add(new ResponseEntity<Object>(new ApiResponse(false, "User not found."),
                     HttpStatus.BAD_REQUEST));
@@ -131,7 +130,7 @@ public class NotificationController {
 
         // Make sure that the job exists (look for the job by ID)
         try {
-            job = jobRepository.getOne(jobID);
+            jobRepository.getOne(jobID);
         } catch (EntityNotFoundException error) {
             result.add(new ResponseEntity<Object>(new ApiResponse(false, "Job not found."),
                     HttpStatus.BAD_REQUEST));
@@ -143,8 +142,8 @@ public class NotificationController {
 
         // If there are no errors above, add the user, job and job's name to the return list
         // Also, add the successful http response to the end of the list for higher level functions to access
-        result.add(user);
-        result.add(job);
+        result.add(userID);
+        result.add(jobID);
         result.add(notification.get("jobname"));
         result.add(new ResponseEntity<Object>(new ApiResponse(true,
                 "Notification for this job assignment to employee #" + userID + " successfully created"),

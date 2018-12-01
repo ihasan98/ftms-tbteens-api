@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name="notifications")
 public class Notification implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long notificationId;
 
     private String message;
@@ -19,20 +19,18 @@ public class Notification implements Serializable {
 
     private String type;
 
-    @ManyToOne
-    private Job job;
+    private Long jobID;
 
-    @ManyToOne
-    private User user;
+    private Long userID;
 
     public Notification(){}
 
-    public Notification(String message, Date createdAt, User user, String type, Job job){
+    public Notification(String message, Date createdAt, Long userID, String type, Long jobID){
         this.message = message;
         this.createdAt = createdAt;
-        this.user = user;
+        this.userID = userID;
         this.type = type;
-        this.job = job;
+        this.jobID = jobID;
         this.isRead = false;
     }
 
@@ -61,12 +59,12 @@ public class Notification implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserID() {
+        return userID;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
     public String getType() { return type; }
