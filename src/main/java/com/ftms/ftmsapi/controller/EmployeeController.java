@@ -133,19 +133,20 @@ public class EmployeeController {
             return new ResponseEntity<Object>(new ApiResponse(true, success), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             // If cannot find, return bad request response
-            return new ResponseEntity<Object>(new ApiResponse(true, failure), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Object>(new ApiResponse(false, failure), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/jobs/{id}")
-    public List<Job> retrieveJobsFromEmployee(@PathVariable Long id) {
+    @GetMapping("/{id}/jobs")
+    public ResponseEntity<?> retrieveJobsFromEmployee(@PathVariable Long id) {
         ArrayList<Job> jobs = new ArrayList<>();
         List<Timesheet> timesheets = timesheetRepository.findAll();
 
         Employee user = employeeRepository.findById(id).orElse(null);
         //Check if user is found
         if (user == null) {
-            System.out.println("User not found!");
+            return new ResponseEntity<Object>(new ApiResponse(false, "User not found"),
+                    HttpStatus.BAD_REQUEST);
         }
         else {
             for (Timesheet timesheet : timesheets) {
@@ -155,7 +156,6 @@ public class EmployeeController {
                 }
             }
         }
-
-        return jobs;
+        return new ResponseEntity<Object>(jobs, HttpStatus.OK);
     }
 }

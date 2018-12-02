@@ -64,6 +64,11 @@ public class JobController {
         return employees;
     }
 
+    @GetMapping("/jobs/{job_id}")
+    public Job retrieveJobFromId(@PathVariable Long job_id) {
+        return jobRepository.getOne(job_id);
+    }
+
 
     /**
      * Return all the timesheets related to the job with ID job_id in a list.
@@ -82,7 +87,7 @@ public class JobController {
             System.out.println("Job not found!");
         } else {
             for (Timesheet timesheet : timesheets) {
-                if (timesheet.getJobId() == job_id) {
+                if (timesheet.getJobId().equals(job_id)){
                     timesheetsJob.add(timesheet);
                 }
 
@@ -94,7 +99,7 @@ public class JobController {
 
     /**
      * Saves the job job to the repository.
-     * 
+     *
      * @param job The job to be saved.
      * @return The job saved.
      */

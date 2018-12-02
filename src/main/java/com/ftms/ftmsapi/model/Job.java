@@ -1,5 +1,6 @@
 package com.ftms.ftmsapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="jobs")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Job implements Serializable{
     // INSTANCE FIELDS
     @Id
@@ -22,8 +24,6 @@ public class Job implements Serializable{
     private String siteName;
 
     private Company company;
-
-    
 
     // GETTERS/SETTERS
 

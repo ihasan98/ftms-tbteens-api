@@ -8,10 +8,8 @@ import com.ftms.ftmsapi.model.Job;
 import com.ftms.ftmsapi.repository.JobRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -56,15 +54,9 @@ public class TimesheetController {
         return jobRepository.findJobsFromTimesheetId(timesheet_id);
     }
 
-    /**
-     * Get all of the timesheets that match the employee with ID employee_id and job with ID job_id.
-     *
-     * @param employee_id The ID of the employee we want to check
-     * @param job_id The ID of the job we want to check
-     * @return The list contains all the timesheets matching the job and the employee.
-     */
-    @RequestMapping("/get/timesheet_by_employee_and_job_id")
-    public List<Timesheet> getTimesheetByEmployeeAndJobId(@Valid @RequestBody Long employee_id, Long job_id){
+    //Get timesheet from job and employee id
+    @GetMapping("/timesheets/{employee_id}/{job_id}")
+    public List<Timesheet> getTimesheetByEmployeeAndJobId(@PathVariable Long employee_id, @PathVariable Long job_id){
         return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);}
 
     /**

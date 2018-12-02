@@ -25,8 +25,8 @@ public class TaskController {
         return taskRepository.save(task);
     }
 
-    @RequestMapping("/tasks/get")
-    public List<Task> getTasksByJobEmployee(@Valid @RequestBody Long job_id, Long employee_id) {
+    @GetMapping("/tasks/{job_id}/{employee_id}")
+    public List<Task> getTasksByJobEmployee(@PathVariable Long job_id, @PathVariable Long employee_id) {
         return taskRepository.getByJobAndEmployee(job_id, employee_id);
     }
 
