@@ -23,6 +23,8 @@ public class Job implements Serializable{
     private String description;
     private String siteName;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
     private Company company;
 
     // GETTERS/SETTERS
@@ -78,7 +80,7 @@ public class Job implements Serializable{
      * @return The company.
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @MapsId
     public Company getCompany() {
         return company;
     }
@@ -88,6 +90,8 @@ public class Job implements Serializable{
      *
      * @param company The company to be set.
      */
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     public void setCompany(Company company) {
         this.company = company;
     }

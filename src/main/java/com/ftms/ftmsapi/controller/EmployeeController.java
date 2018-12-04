@@ -8,12 +8,10 @@ import javax.validation.Valid;
 import com.ftms.ftmsapi.model.Job;
 import com.ftms.ftmsapi.model.Timesheet;
 import com.ftms.ftmsapi.model.Employee;
-import com.ftms.ftmsapi.model.User;
 import com.ftms.ftmsapi.payload.ApiResponse;
 import com.ftms.ftmsapi.repository.EmployeeRepository;
 import com.ftms.ftmsapi.repository.JobRepository;
 import com.ftms.ftmsapi.repository.TimesheetRepository;
-import com.ftms.ftmsapi.repository.UserRepository;
 import com.ftms.ftmsapi.services.EmailService;
 
 import org.hashids.Hashids;

@@ -56,7 +56,7 @@ public class AuthController {
             Employee employee = employeeRepository.getOne(newId);
             return new ResponseEntity<Object>(employee, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity(new ApiResponse(false, "User not found!"),
+            return new ResponseEntity<Object>(new ApiResponse(false, "User not found!"),
                     HttpStatus.BAD_REQUEST);
         }
     }
