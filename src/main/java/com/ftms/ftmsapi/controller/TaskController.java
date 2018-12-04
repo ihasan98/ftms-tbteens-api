@@ -27,6 +27,7 @@ public class TaskController {
         try {
             Timesheet timesheet = timesheetRepository.getOne(timesheet_id);
             List<Task> tasks = taskRepository.findByTimesheet(timesheet);
+            System.out.println(tasks);
             return new ResponseEntity<Object>(tasks, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<Object>(new ApiResponse(false,
@@ -34,13 +35,14 @@ public class TaskController {
         }
     }
 
+    
     @PostMapping("/timesheets/{timesheet_id}/tasks")
     public ResponseEntity createTask(@Valid @RequestBody Task task,
                                      @PathVariable Long timesheet_id){
         try {
             Timesheet timesheet = timesheetRepository.getOne(timesheet_id);
+            task.setTimesheet(timesheet);    // Set the timesheet to the correct one.
             Task createdTask = taskRepository.save(task);
-            createdTask.setTimesheet(timesheet);    // Set the timesheet to the correct one.
             return new ResponseEntity<Object>(createdTask, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<Object>(new ApiResponse(false,

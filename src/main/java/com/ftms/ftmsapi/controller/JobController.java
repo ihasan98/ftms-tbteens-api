@@ -14,6 +14,7 @@ import com.ftms.ftmsapi.repository.JobRepository;
 import com.ftms.ftmsapi.repository.TimesheetRepository;
 import com.ftms.ftmsapi.repository.UserRepository;
 
+import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,9 +72,10 @@ public class JobController {
         }
     }
 
-    @GetMapping("/jobs/{job_id}")
-    public Job retrieveJobFromId(@PathVariable Long job_id) {
-        return jobRepository.getOne(job_id);
+    @GetMapping("/jobs/{timesheet_id}/timesheet")
+    public Job retrieveJobFromId(@PathVariable Long timesheet_id) {
+        Timesheet timesheet = timesheetRepository.getOne(timesheet_id);
+        return jobRepository.getOne(timesheet.getJobId());
     }
 
 

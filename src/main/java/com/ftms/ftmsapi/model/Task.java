@@ -22,6 +22,7 @@ public class Task implements Serializable{
     private String description;
 
     @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "timesheet_id")
     private Timesheet timesheet;
 
