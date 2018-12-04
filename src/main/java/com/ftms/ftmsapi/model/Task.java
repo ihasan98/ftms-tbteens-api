@@ -1,23 +1,29 @@
 package com.ftms.ftmsapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
-@Table(name="task")
+@Table(name="tasks")
 public class Task implements Serializable{
+
     // INSTANCE FIELDS
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User employee;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
-    private Job job;
 
+    @NotBlank
+    private String name;
+
+    @NotBlank
     private String description;
+
+    @JsonIgnore
+    @JoinColumn(name = "timesheet_id")
+    private Timesheet timesheet;
 
     // GETTERS/SETTERS
 
@@ -30,44 +36,43 @@ public class Task implements Serializable{
         return id;
     }
 
+
     /**
-     * Getter for employee.
+     * Getter for the timesheet.
      *
-     * @return The id.
+     * @return The timesheet for the task.
      */
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    public User getEmployee() {
-        return employee;
+    public Timesheet getTimesheet() {
+        return timesheet;
     }
 
     /**
-     * Setter for employee.
+     * Setter for the timesheet.
      *
-     * @param employee The employee to be changed.
+     * @param timesheet The timesheet to be changed.
      */
-    public void setEmployee(User employee) {
-        this.employee = employee;
+    public void setTimesheet(Timesheet timesheet) {
+        this.timesheet = timesheet;
     }
 
     /**
-     * Getter for job.
+     * The getter for name.
      *
-     * @return The job.
+     * @return The name of the task.
      */
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    public Job getJob() {
-        return job;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Setter for job.
+     * The setter for name.
      *
-     * @param job The job to be changed.
+     * @param name The name to be changed.
      */
-    public void setJob(Job job) {
-        this.job = job;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

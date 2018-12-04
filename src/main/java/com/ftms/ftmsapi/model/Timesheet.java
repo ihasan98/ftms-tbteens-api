@@ -1,7 +1,6 @@
 package com.ftms.ftmsapi.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 
