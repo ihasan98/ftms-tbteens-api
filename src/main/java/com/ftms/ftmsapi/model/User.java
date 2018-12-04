@@ -46,17 +46,34 @@ public class User implements Serializable {
     @NotBlank
     private String role;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     public User () {
         this.active = false;
     }
 
-    public User(String fname, String lname, String email, String number, String role){
+    public User(String fname, String lname, String email, String number,
+                String role){
         this.firstname = fname;
         this.lastname = lname;
         this.email = email;
         this.number = number;
         this.role = role;
         this.active = false;
+        this.company = null;
+    }
+
+    public User(String fname, String lname, String email, String number,
+                String role, Company company){
+        this.firstname = fname;
+        this.lastname = lname;
+        this.email = email;
+        this.number = number;
+        this.role = role;
+        this.active = false;
+        this.company = company;
     }
 
     public Long getId() {
@@ -102,6 +119,14 @@ public class User implements Serializable {
     public String getRole() { return role; }
 
     public void setRole(String role) { this.role = role; }
+
+    public Company getCompany(){
+        return company;
+    }
+
+    public void setCompany(Company company){
+        this.company = company;
+    }
 
     public boolean getActive(){
         return active;

@@ -1,20 +1,23 @@
 package com.ftms.ftmsapi.payload;
 
+import com.ftms.ftmsapi.model.Company;
+
 public class UserSummary {
     private Long id;
     private String email;
     private String fname;
     private String lname;
     private String role;
+    private Long company;
 
     public UserSummary(Long id, String email, String fname, String lname,
-                       String role, boolean isActive) {
+                       String role, Long company) {
         this.id = id;
         this.email = email;
         this.fname = fname;
         this.lname = lname;
         this.role = role;
-
+        this.company = company;
     }
 
     public Long getId() {
@@ -55,5 +58,13 @@ public class UserSummary {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getCompany() {
+        return company;
+    }
+
+    public void setCompany(Long company) {
+        this.company = company;
     }
 }

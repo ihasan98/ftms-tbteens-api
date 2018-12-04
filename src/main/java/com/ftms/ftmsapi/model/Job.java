@@ -27,6 +27,18 @@ public class Job implements Serializable{
     @JoinColumn(name = "company_id")
     private Company company;
 
+    public Job() {
+
+    }
+
+    public Job(String jobTitle, String description, String siteName,
+               Company company) {
+        this.jobTitle = jobTitle;
+        this.description = description;
+        this.siteName = siteName;
+        this.company = company;
+    }
+
     // GETTERS/SETTERS
 
     /**

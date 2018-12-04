@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import com.ftms.ftmsapi.model.*;
 import com.ftms.ftmsapi.payload.ApiResponse;
+import com.ftms.ftmsapi.payload.CreateJob;
 import com.ftms.ftmsapi.repository.CompanyRepository;
 import com.ftms.ftmsapi.repository.JobRepository;
 import com.ftms.ftmsapi.repository.TimesheetRepository;
@@ -52,12 +53,22 @@ public class JobController {
     /**
      * Saves the job job to the repository.
      *
-     * @param job The job to be saved.
+     * @param createJob The job to be saved.
      * @return The job saved.
      */
-    @PostMapping("/jobs")
-    public Job createJob(@Valid @RequestBody Job job) {
-        return jobRepository.save(job);
+    @PostMapping("/companies/{company_id}/jobs")
+    public ResponseEntity createJob(@Valid @RequestBody CreateJob createJob,
+                                    @PathVariable Long company_id) {
+        try {
+            Company company = companyRepository.getOne(company_id);
+            Job createdJob = new Job(createJob.getJobTitle(), createJob.getDescription(),
+                    createJob.getSiteName(), company);
+            Job job = jobRepository.save(createdJob);
+            return new ResponseEntity<Object>(job, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Company not found!"), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/jobs/{job_id}")

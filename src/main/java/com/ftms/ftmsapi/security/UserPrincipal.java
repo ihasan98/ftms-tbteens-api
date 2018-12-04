@@ -1,6 +1,7 @@
 package com.ftms.ftmsapi.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ftms.ftmsapi.model.Company;
 import com.ftms.ftmsapi.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,11 +28,14 @@ public class UserPrincipal implements UserDetails {
 
     private  boolean isActive;
 
+    private Company company;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(Long id, String firstname, String lastname,
                          String number, String email, String password, String role,
-                         Collection<? extends GrantedAuthority> authorities, boolean isActive) {
+                         boolean isActive, Company company,
+                         Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -41,6 +45,7 @@ public class UserPrincipal implements UserDetails {
         this.role = role;
         this.authorities = authorities;
         this.isActive = isActive;
+        this.company = company;
     }
 
     public static UserPrincipal create(User user) {
@@ -55,8 +60,9 @@ public class UserPrincipal implements UserDetails {
                 user.getNumber(),
                 user.getPassword(),
                 user.getRole(),
-                authorities,
-                user.getActive()
+                user.getActive(),
+                user.getCompany(),
+                authorities
         );
     }
 
@@ -87,6 +93,8 @@ public class UserPrincipal implements UserDetails {
     public String getRole() {
         return role;
     }
+
+    public Company getCompany() { return company;}
 
     @Override
     public String getUsername() {
