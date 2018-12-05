@@ -29,6 +29,7 @@ public class RecoveryCodeService {
     RecoveryCodeService() {}
 
     public ResponseEntity<?> createNewRecoveryCode(Long userID, String sendType) {
+        System.out.println("creating code");
         try {
             userRepository.getOne(userID);
             TimeZone timezone = TimeZone.getTimeZone("GMT-5");
@@ -56,6 +57,7 @@ public class RecoveryCodeService {
             return new ResponseEntity<Object>(new ApiResponse(true, "Code created for user #" +
                     userID + "."), HttpStatus.OK);
         } catch (Exception error) {
+            error.printStackTrace();
             return new ResponseEntity<Object>(new ApiResponse(false, error.toString()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -80,11 +82,13 @@ public class RecoveryCodeService {
     }
 
     private void sendCodeByEmail(String code, Long userID) {
+        System.out.println("sending code");
         User user = userRepository.getOne(userID);
         String email = user.getEmail();
+        String name = user.getFirstname();
 
-        emailService.prepareAndSend(email,
-                "Account Recovery",
-                "The following is your recovery code: " + code + ". It will only be valid for 1 hour.");
+        String content = emailService.getRecoveryByEmailContent(name, code);
+
+        emailService.sendEmail(name, email, content, "Nor-Weld Account Recovery");
     }
 }

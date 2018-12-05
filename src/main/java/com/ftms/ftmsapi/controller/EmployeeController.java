@@ -73,14 +73,10 @@ public class EmployeeController {
         // Hashing Employee id
         Employee createdEmployee = employeeRepository.save(employee);
         String id = hashids.encode(createdEmployee.getId());
-        String message = "Hello" + " " + employee.getFirstname() + " " + employee.getLastname() + ", \n\n" +
-                "We’re excited to welcome you to the company. Please follow this link to set your account up: " +
-                "http://localhost:3000/usersignup/" + id +
-                "\n If you encounter any problems, please contact admin." +
-                "\n\n - Nor-Weld";
-        emailService.prepareAndSend(createdEmployee.getEmail(),
-                "Account Activation",
-                message);
+        String content = emailService.getUserRegistrationContent(employee.getFirstname(),
+                "http://localhost:3000/usersignup/" + id);
+        emailService.sendEmail(employee.getFirstname(), employee.getEmail(), content,
+                "Nor-Weld FTMS Account Registration");
         return employeeRepository.save(createdEmployee);
     }
 
