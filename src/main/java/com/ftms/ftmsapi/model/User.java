@@ -16,7 +16,9 @@ import java.io.Serializable;
         })
 })
 @Inheritance( strategy = InheritanceType.SINGLE_TABLE )
-@DiscriminatorColumn( name = "user_type" )
+@DiscriminatorColumn( discriminatorType = DiscriminatorType.STRING,
+        name = "user_type",
+        columnDefinition = "VARCHAR(20)")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements Serializable {
 
