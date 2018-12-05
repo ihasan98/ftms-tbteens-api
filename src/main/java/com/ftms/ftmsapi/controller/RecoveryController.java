@@ -3,6 +3,7 @@ package com.ftms.ftmsapi.controller;
 import com.ftms.ftmsapi.model.User;
 import com.ftms.ftmsapi.payload.ApiResponse;
 import com.ftms.ftmsapi.repository.UserRepository;
+import com.ftms.ftmsapi.services.EmailService;
 import com.ftms.ftmsapi.services.RecoveryCodeService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class RecoveryController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    EmailService emailService;
 
     // Verify the information given when trying to recover a password
     @PostMapping("/password")
@@ -72,6 +76,7 @@ public class RecoveryController {
 
     @PostMapping("/getcode/password/{id}")
     public ResponseEntity<?> createAndSendRecoveryCodeForPassword(@PathVariable Long id) {
+        System.out.println("getting code");
         return recoveryCodeService.createNewRecoveryCode(id, "email");
     }
 
@@ -134,14 +139,25 @@ public class RecoveryController {
 
     @PostMapping("/changepassword")
     public ResponseEntity<?> changePassword(@Valid @RequestBody String info) {
+        // parse json
         JSONObject userInfo = new JSONObject(info);
+
+        // get password entered
         String passwordEntered = userInfo.get("password").toString();
+
+        // get user id
         long userId = Long.parseLong(userInfo.get("id").toString());
 
         try {
+            // find user
             User user = userRepository.getOne(userId);
+
+            // encode password
             user.setPassword(passwordEncoder.encode(passwordEntered));
+
             userRepository.save(user);
+            String content = emailService.getPasswordChangedContent(user.getFirstname());
+            emailService.sendEmail(user.getFirstname(), user.getEmail(), content, "Account Information Changed");
             return new ResponseEntity<Object>(new ApiResponse(true,
                     "Password changed successfully!"),
                     HttpStatus.OK);

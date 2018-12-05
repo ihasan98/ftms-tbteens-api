@@ -9,11 +9,9 @@ import javax.validation.Valid;
 import com.ftms.ftmsapi.model.*;
 import com.ftms.ftmsapi.payload.ApiResponse;
 import com.ftms.ftmsapi.payload.CreateJob;
-import com.ftms.ftmsapi.repository.CompanyRepository;
-import com.ftms.ftmsapi.repository.JobRepository;
-import com.ftms.ftmsapi.repository.TimesheetRepository;
-import com.ftms.ftmsapi.repository.UserRepository;
+import com.ftms.ftmsapi.repository.*;
 
+import com.ftms.ftmsapi.services.EmailService;
 import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +38,10 @@ public class JobController {
     UserRepository<User> userRepository;
     @Autowired
     CompanyRepository companyRepository;
+    @Autowired
+    EmployeeRepository employeeRepository;
+    @Autowired
+    EmailService emailService;
 
     /**
      * Return a list containing all jobs.
@@ -136,6 +138,16 @@ public class JobController {
             timesheet.setEmployeeId(employeeId);
             timesheet.setApprovalStatus("Not reviewed");
             timesheetController.createTimesheet(timesheet);
+        }
+
+        try {
+            Job job = jobRepository.getOne(jobId);
+            Employee employee = employeeRepository.getOne(employeeId);
+            String content = emailService.getJobAssignmentContent(employee.getFirstname(), job);
+            emailService.sendEmail(employee.getFirstname(), employee.getEmail(), content, "New Job Assignment");
+        } catch (EntityNotFoundException error) {
+            System.out.println("Something was not found above.");
+            error.printStackTrace();
         }
 
     }
