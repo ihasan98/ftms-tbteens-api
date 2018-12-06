@@ -13,5 +13,5 @@ import java.util.List;
 public interface TimesheetRepository extends JpaRepository<Timesheet, Long> {
 
     // Find timesheet by job and employee.
-    public List<Timesheet> findByJobAndEmployee(Employee employee, Job job);
+    public List<Timesheet> findByEmployeeAndJob(Employee employee, Job job);
 }

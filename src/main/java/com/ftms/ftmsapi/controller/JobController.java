@@ -32,6 +32,8 @@ public class JobController {
     @Autowired
     TimesheetRepository timesheetRepository;
     @Autowired
+    TaskRepository taskRepository;
+    @Autowired
     TimesheetController timesheetController;
     @Autowired
     UserRepository<User> userRepository;
@@ -205,4 +207,27 @@ public class JobController {
         }
         return timesheetsJob;
     }
+
+    // Delete jobs from an employee.
+    @DeleteMapping("/jobs/{jobID}/remove/{employeeID}")
+    public ResponseEntity<HttpStatus> deleteEmployeeFromJob(@PathVariable Long jobID, @PathVariable Long employeeID) {
+        try {
+            Employee employee = employeeRepository.getOne(employeeID);
+            Job job = jobRepository.getOne(jobID);
+            List<Timesheet> timesheets = timesheetRepository.findByEmployeeAndJob(employee, job); // Find timesheet by job and employee.
+            for (Timesheet timesheet : timesheets) {
+                    // Finding and removing all tasks associated with the timesheet.
+                    List<Task> tasks = taskRepository.findByTimesheet(timesheet);
+                    for (Task task : tasks) {
+                        taskRepository.delete(task);
+                    }
+                    // Delete the timesheet.
+                    timesheetRepository.delete(timesheet);
+            }
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

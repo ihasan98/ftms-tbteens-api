@@ -18,11 +18,11 @@ public class Timesheet implements Serializable{
     // 0- Not reviewed, 1- Rejected, 2- Accepted
     private int approvalStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id")
     private Job job;
 
@@ -31,26 +31,26 @@ public class Timesheet implements Serializable{
     }
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId
     public Employee getEmployee() {
         return employee;
     }
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId
     public Job getJob() {
         return job;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId
     public void setJob(Job job) {
         this.job = job;

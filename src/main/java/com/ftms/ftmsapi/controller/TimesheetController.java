@@ -60,7 +60,7 @@ public class TimesheetController {
         try {
             Employee employee = employeeRepository.getOne(employeeID);
             Job job = jobRepository.getOne(jobID);
-            List<Timesheet> foundTimesheets = timesheetRepository.findByJobAndEmployee(employee, job);
+            List<Timesheet> foundTimesheets = timesheetRepository.findByEmployeeAndJob(employee, job);
             return new ResponseEntity<Object>(foundTimesheets, HttpStatus.OK);
 
         } catch (EntityNotFoundException e) {
