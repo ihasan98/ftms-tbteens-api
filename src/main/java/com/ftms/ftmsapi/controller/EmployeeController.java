@@ -48,7 +48,7 @@ public class EmployeeController {
     Hashids hashids = new Hashids("FTMS", 10);
 
     // Get all employees that are not an administrator
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPERVISOR')")
     @GetMapping("")
     public List<Employee> getAllEmployees() {
         ArrayList<Employee> employees = (ArrayList<Employee>) employeeRepository.findAll();

@@ -12,7 +12,6 @@ import com.ftms.ftmsapi.payload.CreateJob;
 import com.ftms.ftmsapi.repository.*;
 
 import com.ftms.ftmsapi.services.EmailService;
-import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,40 +115,42 @@ public class JobController {
         }
     }
 
-    /**
-     * Assign a job.
-     *
-     * @param selection The selection to assign.
-     */
-    @PutMapping("/jobsassign")
-    void assignJob(@Valid @RequestBody Selection selection) {
+    @PutMapping("/jobs/{jobID}/assign/{employeeID}")
+    public ResponseEntity assignJob(@PathVariable Long jobID, @PathVariable Long employeeID) {
         Timesheet timesheet = new Timesheet();
-        Long jobId = selection.getJob().getId();
-        Long employeeId = selection.getEmployee().getId();
         List<Timesheet> timesheets = timesheetRepository.findAll();
         Boolean exist = false;
+        String process = "Fail";
         for (Timesheet storedTimesheet: timesheets){
-            if (storedTimesheet.getEmployeeId() == employeeId && storedTimesheet.getJobId() == jobId){
-                exist = true;
+            if (storedTimesheet.getEmployeeId().equals(employeeID) &&
+                    storedTimesheet.getJobId().equals(jobID)){
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                        "This job has already been assigned to this employee!")
+                        , HttpStatus.BAD_REQUEST);
             }
         }
-        if (jobId != null && employeeId != null && !exist) {
-            timesheet.setJobId(jobId);
-            timesheet.setEmployeeId(employeeId);
+
+        if (jobID != null && employeeID != null && !exist) {
+            timesheet.setJobId(jobID);
+            timesheet.setEmployeeId(employeeID);
             timesheet.setApprovalStatus("Not reviewed");
-            timesheetController.createTimesheet(timesheet);
+            timesheetRepository.save(timesheet);
         }
 
         try {
-            Job job = jobRepository.getOne(jobId);
-            Employee employee = employeeRepository.getOne(employeeId);
+            Job job = jobRepository.getOne(jobID);
+            Employee employee = employeeRepository.getOne(employeeID);
             String content = emailService.getJobAssignmentContent(employee.getFirstname(), job);
-            emailService.sendEmail(employee.getFirstname(), employee.getEmail(), content, "New Job Assignment");
+            emailService.sendEmail(employee.getFirstname(), employee.getEmail(),
+                    content, "New Job Assignment");
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Job assinged to employee!") , HttpStatus.OK);
         } catch (EntityNotFoundException error) {
-            System.out.println("Something was not found above.");
             error.printStackTrace();
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Employee/Job not found!")
+                    , HttpStatus.BAD_REQUEST);
         }
-
     }
 
     /**
