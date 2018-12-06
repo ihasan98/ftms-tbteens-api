@@ -49,14 +49,10 @@ public class CompanyController {
         // Hashing ClientUser id
         Company createdCompany = companyRepository.save(company);
         String id = hashids.encode(createdCompany.getId());
-        String message = "Welcome " + company.getName()  +
-                "\n We’re excited you chose Norweld. Please follow this link to set " +
-                "up your company account: " +
-                "http://localhost:3000/companysignup/" + id +
-                "\n If you encounter any problems, please contact admin." +
-                "\n\n - Nor-Weld";
-        emailService.prepareAndSend(createdCompany.getEmail(),
-                "Welcome Email", message);
+        String content = emailService.getCompanyRegistrationContent(createdCompany.getName(),
+                "http://localhost:3000/companysignup/" + id);
+        emailService.sendEmail(createdCompany.getName(), createdCompany.getEmail(), content,
+                "Nor-Weld Company Account Registration");
         return createdCompany;
     }
 
