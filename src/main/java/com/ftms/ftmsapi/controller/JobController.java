@@ -119,8 +119,6 @@ public class JobController {
     public ResponseEntity assignJob(@PathVariable Long jobID, @PathVariable Long employeeID) {
         Timesheet timesheet = new Timesheet();
         List<Timesheet> timesheets = timesheetRepository.findAll();
-        Boolean exist = false;
-        String process = "Fail";
         for (Timesheet storedTimesheet: timesheets){
             if (storedTimesheet.getEmployeeId().equals(employeeID) &&
                     storedTimesheet.getJobId().equals(jobID)){
@@ -130,9 +128,13 @@ public class JobController {
             }
         }
 
-        if (jobID != null && employeeID != null && !exist) {
-            timesheet.setJobId(jobID);
-            timesheet.setEmployeeId(employeeID);
+        if (jobID != null && employeeID != null) {
+            // Finding employee and job based on ID.
+            Employee employee = employeeRepository.getOne(employeeID);
+            Job job = jobRepository.getOne(jobID);
+
+            timesheet.setJob(job);
+            timesheet.setEmployee(employee);
             timesheet.setApprovalStatus("Not reviewed");
             timesheetRepository.save(timesheet);
         }
@@ -199,25 +201,8 @@ public class JobController {
                 if (timesheet.getJobId().equals(job_id)){
                     timesheetsJob.add(timesheet);
                 }
-
             }
         }
         return timesheetsJob;
     }
-
-    @DeleteMapping("/jobs/{jobId}/employees/{employeeId}")
-    public ResponseEntity<HttpStatus> deleteEmployeeFromJob(@PathVariable Long jobId, @PathVariable Long employeeId) {
-        try {
-            List<Timesheet> timesheets = timesheetRepository.findAll();
-            for (Timesheet timesheet : timesheets) {
-                if (timesheet.getJobId().equals(jobId) && timesheet.getEmployeeId().equals(employeeId)) {
-                    timesheetRepository.delete(timesheet);
-                }
-            }
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
 }

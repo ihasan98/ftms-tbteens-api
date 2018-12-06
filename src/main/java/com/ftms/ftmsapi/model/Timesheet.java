@@ -14,56 +14,59 @@ public class Timesheet implements Serializable{
 
     private String approvalStatus;
 
-    private Long employeeId;
-    
-    private Long jobId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
+    private Job job;
 
     public Long getId() {
         return id;
     }
 
 
-    /**
-     * @return the EmployeeId
-     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public Employee getEmployee() {
+        return employee;
+    }
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public Job getJob() {
+        return job;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    // Returns the Employee ID of the employee associated with this timesheet.
     public Long getEmployeeId() {
-        return employeeId;
+        return employee.getId();
     }
 
-    /**
-     * @param employeeId the EmployeeId to set
-     */
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    /**
-     * @return the jobID
-     */
+    // Returns the Job ID of the job that is associated with this task.
     public Long getJobId() {
-        return jobId;
+        return job.getId();
     }
 
-    /**
-     * @param jobId the jobId to set
-     */
-    public void setJobId(Long jobId) {
-        this.jobId = jobId;
-    }
-
-    /**
-     * @return the approvalStatus
-     */
     public String getApprovalStatus() {
         return approvalStatus;
     }
 
-    /**
-     * @param approvalStatus the approvalStatus to set
-     */
     public void setApprovalStatus(String approvalStatus) {
         this.approvalStatus = approvalStatus;
     }
-
-    // GETTERS/SETTERS
 }

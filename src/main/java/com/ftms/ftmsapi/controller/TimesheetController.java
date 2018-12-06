@@ -1,13 +1,19 @@
 package com.ftms.ftmsapi.controller;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+import com.ftms.ftmsapi.model.Employee;
 import com.ftms.ftmsapi.model.Timesheet;
+import com.ftms.ftmsapi.payload.ApiResponse;
+import com.ftms.ftmsapi.repository.EmployeeRepository;
 import com.ftms.ftmsapi.repository.TimesheetRepository;
 import com.ftms.ftmsapi.model.Job;
 import com.ftms.ftmsapi.repository.JobRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,16 +29,8 @@ public class TimesheetController {
     @Autowired
     JobRepository jobRepository;
 
-    /**
-     * Saving the Timesheet timesheet to the database.
-     *
-     * @param timesheet The timesheet we wants to save to the database.
-     * @return The timesheet saved.
-     */
-    @PostMapping("/save")
-    public Timesheet createTimesheet(@Valid @RequestBody Timesheet timesheet) {
-        return timesheetRepository.save(timesheet);
-    }
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     /**
      * Get all the timesheets in a list.
@@ -56,16 +54,27 @@ public class TimesheetController {
     }
 
     //Get timesheet from job and employee id
-    @GetMapping("/timesheets/{employee_id}/{job_id}")
-    public List<Timesheet> getTimesheetByEmployeeAndJobId(@PathVariable Long employee_id, @PathVariable Long job_id){
-        return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);}
+    @GetMapping("/timesheets/{employeeID}/{jobID}")
+    public ResponseEntity getTimesheetByEmployeeAndJobId(@PathVariable Long employeeID, @PathVariable Long jobID) {
+        //Making sure the jobID and employeeID are correct.
+        try {
+            Employee employee = employeeRepository.getOne(employeeID);
+            Job job = jobRepository.getOne(jobID);
+            List<Timesheet> foundTimesheets = timesheetRepository.findByJobAndEmployee(employee, job);
+            return new ResponseEntity<Object>(foundTimesheets, HttpStatus.OK);
+
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Employee/Job not found!"), HttpStatus.BAD_REQUEST);
+        }
+    }
     
     @GetMapping("/timesheets/{jobID}")
     public List<Timesheet> getTimesheetByJobs(@PathVariable Long jobID){
         List<Timesheet> timesheets = timesheetRepository.findAll();
         List<Timesheet> jobTimesheet = new ArrayList<>();
         for (Timesheet timesheet: timesheets){
-            if (timesheet.getJobId() == jobID)
+            if (timesheet.getJob().getId().equals(jobID))
                 jobTimesheet.add(timesheet);
         }
         return jobTimesheet;
