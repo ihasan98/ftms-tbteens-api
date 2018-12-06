@@ -204,4 +204,19 @@ public class JobController {
         return timesheetsJob;
     }
 
+    @DeleteMapping("/jobs/{jobId}/employees/{employeeId}")
+    public ResponseEntity<HttpStatus> deleteEmployeeFromJob(@PathVariable Long jobId, @PathVariable Long employeeId) {
+        try {
+            List<Timesheet> timesheets = timesheetRepository.findAll();
+            for (Timesheet timesheet : timesheets) {
+                if (timesheet.getJobId().equals(jobId) && timesheet.getEmployeeId().equals(employeeId)) {
+                    timesheetRepository.delete(timesheet);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
