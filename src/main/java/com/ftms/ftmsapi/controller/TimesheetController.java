@@ -10,6 +10,7 @@ import com.ftms.ftmsapi.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -58,7 +59,17 @@ public class TimesheetController {
     @GetMapping("/timesheets/{employee_id}/{job_id}")
     public List<Timesheet> getTimesheetByEmployeeAndJobId(@PathVariable Long employee_id, @PathVariable Long job_id){
         return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);}
-
+    
+    @GetMapping("/timesheets/{jobID}")
+    public List<Timesheet> getTimesheetByJobs(@PathVariable Long jobID){
+        List<Timesheet> timesheets = timesheetRepository.findAll();
+        List<Timesheet> jobTimesheet = new ArrayList<>();
+        for (Timesheet timesheet: timesheets){
+            if (timesheet.getJobId() == jobID)
+                jobTimesheet.add(timesheet);
+        }
+        return jobTimesheet;
+    }
     /**
      * Approves a timesheet.
      *
