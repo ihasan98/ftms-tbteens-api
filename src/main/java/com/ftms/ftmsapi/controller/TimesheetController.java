@@ -84,11 +84,25 @@ public class TimesheetController {
      *
      * @param timesheetId The ID of the timesheet to be approved.
      */
-    @PostMapping("/approve")
-    public void approve(Long timesheetId) {
-        Timesheet ts = timesheetRepository.getOne(timesheetId);
-        ts.setApprovalStatus("Approved");
-        timesheetRepository.save(ts);
+    @PutMapping("/timesheet/approve/{timesheetID}")
+    public ResponseEntity approveTimesheet(@PathVariable Long timesheetID) {
+        try{
+            Timesheet ts = timesheetRepository.getOne(timesheetID);
+            if (ts.getApprovalStatus() != 0){
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has already been reviewed!") , HttpStatus.BAD_REQUEST);
+            }
+            else{
+                ts.setApprovalStatus(2);
+                timesheetRepository.save(ts);
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                            "Timesheet has been reviewed!") , HttpStatus.OK);
+            }
+        }
+        catch (EntityNotFoundException error){
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has not been reviewed!") , HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -96,11 +110,26 @@ public class TimesheetController {
      *
      * @param timesheetId The ID of the timesheet to be rejected.
      */
-    @PostMapping("/reject")
-    public void reject(Long timesheetId) {
-        Timesheet ts = timesheetRepository.getOne(timesheetId);
-        ts.setApprovalStatus("Rejected");
-        timesheetRepository.save(ts);
+    @PutMapping("/timesheet/reject/{timesheetID}")
+    public ResponseEntity rejectTimesheet(@PathVariable Long timesheetID) {
+        System.out.println("ALSKDJLASJDK");
+        try{
+            Timesheet ts = timesheetRepository.getOne(timesheetID);
+            if (ts.getApprovalStatus() != 0){
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has already been reviewed!") , HttpStatus.BAD_REQUEST);
+            }
+            else{
+                ts.setApprovalStatus(1);
+                timesheetRepository.save(ts);
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                            "Timesheet has been reviewed!") , HttpStatus.OK);
+            }
+        }
+        catch (EntityNotFoundException error){
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has not been reviewed!") , HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

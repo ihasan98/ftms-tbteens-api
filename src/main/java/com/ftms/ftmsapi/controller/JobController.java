@@ -135,7 +135,7 @@ public class JobController {
 
             timesheet.setJob(job);
             timesheet.setEmployee(employee);
-            timesheet.setApprovalStatus("Not reviewed");
+            timesheet.setApprovalStatus(0);
             timesheetRepository.save(timesheet);
         }
 

@@ -1,6 +1,9 @@
 package com.ftms.ftmsapi.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 
@@ -12,7 +15,8 @@ public class Timesheet implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String approvalStatus;
+    // 0- Not reviewed, 1- Rejected, 2- Accepted
+    private int approvalStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
@@ -53,20 +57,23 @@ public class Timesheet implements Serializable{
     }
 
     // Returns the Employee ID of the employee associated with this timesheet.
+    @JsonIgnore
     public Long getEmployeeId() {
         return employee.getId();
     }
 
+    
     // Returns the Job ID of the job that is associated with this task.
+    @JsonIgnore
     public Long getJobId() {
         return job.getId();
     }
 
-    public String getApprovalStatus() {
+    public int getApprovalStatus() {
         return approvalStatus;
     }
 
-    public void setApprovalStatus(String approvalStatus) {
+    public void setApprovalStatus(int approvalStatus) {
         this.approvalStatus = approvalStatus;
     }
 }
