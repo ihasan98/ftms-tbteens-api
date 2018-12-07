@@ -2,6 +2,9 @@ package com.ftms.ftmsapi.modelTest;
 
 import org.junit.Test;
 import com.ftms.ftmsapi.model.Notification;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -23,7 +26,7 @@ public class NotificationTest {
 
     @Test
     public void testNotificationCreatedAt() {
-        Date d = new Date();
+        LocalDateTime d = LocalDateTime.now();
         notification.setCreatedAt(d);
         assertEquals(notification.getCreatedAt(), d);
     }

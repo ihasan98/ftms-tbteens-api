@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +59,7 @@ public class NotificationService {
     }
 
     public Notification createNotification(String message, Long userID, String type, Long jobID) {
-        Notification notification = new Notification(message, new Date(), userID, type, jobID);
+        Notification notification = new Notification(message, LocalDateTime.now(), userID, type, jobID);
         updateUserNotification(notification);
         return notification;
     }

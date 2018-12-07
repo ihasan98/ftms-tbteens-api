@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 public class TaskController {
@@ -111,5 +113,9 @@ public class TaskController {
             error.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+
+//    @GetMapping("/tasksById/{id}")
+//    public Optional<Task> getTaskById(@PathVariable long id){
+//        return taskRepository.findById(id);
+//    }
 }

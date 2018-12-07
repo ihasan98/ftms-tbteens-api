@@ -52,6 +52,16 @@ public class NotificationController {
         return notificationRepository.save(notificationbyId);
     }
 
+    //Get Day of the notification
+    @GetMapping("/getDate/{id}")
+    public String getDate(@PathVariable Long id){
+        Notification notificationbyId = notificationRepository.getNotification(id);
+        return toString().valueOf(notificationbyId.getCreatedAt().getDayOfMonth()) + " " +
+                toString().valueOf(notificationbyId.getCreatedAt().getMonth()) + "," +
+                toString().valueOf(notificationbyId.getCreatedAt().getHour())+ ":" +
+                toString().valueOf(notificationbyId.getCreatedAt().getMinute());
+    }
+
     // Create the notification for an employee notifying him/her that a job has been assigned to him/her
     @PostMapping("/jobassigned")
     public ResponseEntity<?> createNewNotificationJobAssign(@Valid @RequestBody String info) {

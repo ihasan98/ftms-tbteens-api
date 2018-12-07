@@ -2,6 +2,7 @@ package com.ftms.ftmsapi.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,7 +14,7 @@ public class Notification implements Serializable {
 
     private String message;
 
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     private boolean isRead;
 
@@ -25,7 +26,7 @@ public class Notification implements Serializable {
 
     public Notification(){}
 
-    public Notification(String message, Date createdAt, Long userID, String type, Long jobID){
+    public Notification(String message, LocalDateTime createdAt, Long userID, String type, Long jobID){
         this.message = message;
         this.createdAt = createdAt;
         this.userID = userID;
@@ -51,11 +52,11 @@ public class Notification implements Serializable {
         this.message = message;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
