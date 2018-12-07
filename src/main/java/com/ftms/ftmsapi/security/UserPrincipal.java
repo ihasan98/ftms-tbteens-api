@@ -33,7 +33,7 @@ public class UserPrincipal implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(Long id, String firstname, String lastname,
-                         String number, String email, String password, String role,
+                         String email, String number, String password, String role,
                          boolean isActive, Company company,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;

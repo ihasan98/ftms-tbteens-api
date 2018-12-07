@@ -3,13 +3,16 @@ package com.ftms.ftmsapi.controller;
 import com.ftms.ftmsapi.model.ClientUser;
 import com.ftms.ftmsapi.model.Company;
 import com.ftms.ftmsapi.model.Employee;
+import com.ftms.ftmsapi.model.User;
 import com.ftms.ftmsapi.payload.*;
 import com.ftms.ftmsapi.repository.ClientUserRepository;
 import com.ftms.ftmsapi.repository.CompanyRepository;
 import com.ftms.ftmsapi.repository.EmployeeRepository;
+import com.ftms.ftmsapi.repository.UserRepository;
 import com.ftms.ftmsapi.security.JwtTokenProvider;
 
 import org.hashids.Hashids;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -97,10 +100,34 @@ public class AuthController {
         ClientUser user = new ClientUser(signUpRequest.getFirstname(),
                 signUpRequest.getLastname(), signUpRequest.getEmail(),
                 signUpRequest.getNumber(), "ROLE_CLIENT", company);
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setActive(true);
         ClientUser result = clientUserRepository.save(user);
         return new ResponseEntity<Object>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/verifypassword/employee")
+    public ResponseEntity verifyPassword(@Valid @RequestBody String loginInfo) {
+        JSONObject info = new JSONObject(loginInfo);
+        CharSequence password = info.get("password").toString();
+        Long id = Long.parseLong(info.get("id").toString());
+
+        try {
+            Employee employee = employeeRepository.getOne(id);
+            String currentPassword = employee.getPassword();
+            System.out.println(passwordEncoder.matches(password, currentPassword));
+            if (passwordEncoder.matches(password, currentPassword)) {
+                return new ResponseEntity<Object>(new ApiResponse(true, "Verification successful."),
+                        HttpStatus.OK);
+            } else {
+                return new ResponseEntity<Object>(new ApiResponse(false, "Incorrect password."),
+                        HttpStatus.NOT_ACCEPTABLE);
+            }
+        } catch (EntityNotFoundException error) {
+            System.out.println("cant find");
+            return new ResponseEntity<Object>(new ApiResponse(false, "Cannot find the user."),
+                    HttpStatus.OK);
+        }
     }
 }
 

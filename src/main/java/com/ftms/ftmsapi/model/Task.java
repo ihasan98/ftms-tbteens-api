@@ -1,6 +1,8 @@
 package com.ftms.ftmsapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -22,7 +24,7 @@ public class Task implements Serializable{
     private String description;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "timesheet_id")
     private Timesheet timesheet;
 
@@ -43,7 +45,7 @@ public class Task implements Serializable{
      *
      * @return The timesheet for the task.
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId
     public Timesheet getTimesheet() {
         return timesheet;

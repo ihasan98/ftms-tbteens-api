@@ -1,6 +1,9 @@
 package com.ftms.ftmsapi.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 
@@ -12,58 +15,65 @@ public class Timesheet implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String approvalStatus;
+    // 0- Not reviewed, 1- Rejected, 2- Accepted
+    private int approvalStatus;
 
-    private Long employeeId;
-    
-    private Long jobId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
+    private Job job;
 
     public Long getId() {
         return id;
     }
 
 
-    /**
-     * @return the EmployeeId
-     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public Employee getEmployee() {
+        return employee;
+    }
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public Job getJob() {
+        return job;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    // Returns the Employee ID of the employee associated with this timesheet.
+    @JsonIgnore
     public Long getEmployeeId() {
-        return employeeId;
+        return employee.getId();
     }
 
-    /**
-     * @param employeeId the EmployeeId to set
-     */
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    /**
-     * @return the jobID
-     */
+    
+    // Returns the Job ID of the job that is associated with this task.
+    @JsonIgnore
     public Long getJobId() {
-        return jobId;
+        return job.getId();
     }
 
-    /**
-     * @param jobId the jobId to set
-     */
-    public void setJobId(Long jobId) {
-        this.jobId = jobId;
-    }
-
-    /**
-     * @return the approvalStatus
-     */
-    public String getApprovalStatus() {
+    public int getApprovalStatus() {
         return approvalStatus;
     }
 
-    /**
-     * @param approvalStatus the approvalStatus to set
-     */
-    public void setApprovalStatus(String approvalStatus) {
+    public void setApprovalStatus(int approvalStatus) {
         this.approvalStatus = approvalStatus;
     }
-
-    // GETTERS/SETTERS
 }
