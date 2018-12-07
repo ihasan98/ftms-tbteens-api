@@ -71,10 +71,10 @@ public class TimesheetController {
     }
     
     @GetMapping("/timesheets/{jobID}")
-    public List<Timesheet> getTimesheetByJobs(@PathVariable Long jobID){
+    public List<Timesheet> getTimesheetByJobs(@PathVariable Long jobID) {
         List<Timesheet> timesheets = timesheetRepository.findAll();
         List<Timesheet> jobTimesheet = new ArrayList<>();
-        for (Timesheet timesheet: timesheets){
+        for (Timesheet timesheet : timesheets) {
             if (timesheet.getJob().getId().equals(jobID))
                 jobTimesheet.add(timesheet);
         }
