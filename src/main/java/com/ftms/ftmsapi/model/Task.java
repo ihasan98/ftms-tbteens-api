@@ -1,8 +1,7 @@
 package com.ftms.ftmsapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="tasks")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Task implements Serializable{
 
     // INSTANCE FIELDS
@@ -23,10 +23,18 @@ public class Task implements Serializable{
     @NotBlank
     private String description;
 
+    private Long userID;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "timesheet_id")
     private Timesheet timesheet;
+
+    private Long startingSession;
+
+    private Long latestSession;
+
+    private double hoursElapsed;
 
     // GETTERS/SETTERS
 
@@ -35,7 +43,7 @@ public class Task implements Serializable{
      *
      * @return The ID of this.
      */
-    public Long getId() {
+    public Long getID() {
         return id;
     }
 
@@ -94,5 +102,37 @@ public class Task implements Serializable{
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
+
+    public Long getStartingSession() {
+        return startingSession;
+    }
+
+    public void setStartingSession(Long startingSession) {
+        this.startingSession = startingSession;
+    }
+
+    public Long getLatestSession() {
+        return latestSession;
+    }
+
+    public void setLatestSession(Long latestSession) {
+        this.latestSession = latestSession;
+    }
+
+    public double getHoursElapsed() {
+        return hoursElapsed;
+    }
+
+    public void incrementHoursElapsed(double time) {
+        hoursElapsed += time;
     }
 }

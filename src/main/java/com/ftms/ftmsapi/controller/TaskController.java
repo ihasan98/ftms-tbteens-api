@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import com.ftms.ftmsapi.model.*;
 import com.ftms.ftmsapi.payload.ApiResponse;
+import com.ftms.ftmsapi.repository.PartRequestRepository;
 import com.ftms.ftmsapi.repository.TaskRepository;
 import com.ftms.ftmsapi.repository.TimesheetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,25 @@ public class TaskController {
 
     @Autowired
     TimesheetRepository timesheetRepository;
+
     @Autowired
     TaskRepository taskRepository;
 
+    @Autowired
+    PartRequestRepository partRequestRepository;
+
+    @GetMapping("tasks/{ID}")
+    public ResponseEntity getTaskByID(@PathVariable Long ID) {
+        try {
+            return new ResponseEntity<Object>(taskRepository.getOne(ID), HttpStatus.OK);
+        } catch (EntityNotFoundException error) {
+            return new ResponseEntity<Object>(new ApiResponse(false, "Task not found."),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/timesheets/{timesheet_id}/tasks")
-    public ResponseEntity getTasksByTimesheet(@PathVariable Long timesheet_id) {
+    public ResponseEntity getTasksByTimesheetID(@PathVariable Long timesheet_id) {
         try {
             Timesheet timesheet = timesheetRepository.getOne(timesheet_id);
             List<Task> tasks = taskRepository.findByTimesheet(timesheet);
@@ -34,7 +49,7 @@ public class TaskController {
         }
     }
 
-    
+
     @PostMapping("/timesheets/{timesheet_id}/tasks")
     public ResponseEntity createTask(@Valid @RequestBody Task task,
                                      @PathVariable Long timesheet_id){
@@ -57,18 +72,21 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}")
-    public void editTask(@PathVariable long id,
-                         @RequestParam User employee, @RequestParam Job job,
-                         @RequestParam String description){
-        try{
+    public ResponseEntity editTask(@PathVariable Long id, @Valid @RequestBody Task task){
+        try {
             Task taskToEdit = taskRepository.getOne(id);
-            taskToEdit.setDescription(description);
+            taskToEdit.setName(task.getName());
+            taskToEdit.setDescription(task.getDescription());
 
             // Consider changing to taskRepository.update(id)
             taskRepository.save(taskToEdit);
+            return new ResponseEntity<Object>(new ApiResponse(true, "Task updated successfully!"),
+                    HttpStatus.ACCEPTED);
         } catch (EntityNotFoundException e) {
             // Consider sending HTTP Response instead
-            System.out.println("No such id");
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Cannot find the task specified."),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -80,6 +98,18 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("tasks/parts")
+    public ResponseEntity createPartRequest(@Valid @RequestBody PartRequest partRequest) {
+        System.out.println("error");
+        try {
+            PartRequest newRequest =  partRequestRepository.save(partRequest);
+            return new ResponseEntity<Object>(newRequest, HttpStatus.ACCEPTED);
+        } catch (Exception error) {
+            error.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
