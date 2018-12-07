@@ -34,7 +34,7 @@ public class Task implements Serializable{
 
     private Long latestSession;
 
-    private double hoursElapsed;
+    private double hoursElapsed = 0.0;
 
     // GETTERS/SETTERS
 
