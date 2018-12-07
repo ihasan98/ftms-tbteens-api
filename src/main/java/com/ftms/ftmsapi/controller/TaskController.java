@@ -107,12 +107,13 @@ public class TaskController {
     public ResponseEntity createPartRequest(@Valid @RequestBody PartRequest partRequest) {
         System.out.println("error");
         try {
-            PartRequest newRequest =  partRequestRepository.save(partRequest);
+            PartRequest newRequest = partRequestRepository.save(partRequest);
             return new ResponseEntity<Object>(newRequest, HttpStatus.ACCEPTED);
         } catch (Exception error) {
             error.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
 //    @GetMapping("/tasksById/{id}")
 //    public Optional<Task> getTaskById(@PathVariable long id){

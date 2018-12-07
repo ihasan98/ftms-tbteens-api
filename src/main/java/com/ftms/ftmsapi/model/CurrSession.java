@@ -132,7 +132,7 @@ public class CurrSession implements Serializable {
             finalTime = "0" + hour + ":" + minute;
             // 2 digits both
         } else {
-            finalTime = hour + minute;
+            finalTime = hour + ":" + minute;
         }
         return finalTime;
     }
