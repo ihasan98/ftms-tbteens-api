@@ -34,11 +34,22 @@ public class NotificationController {
     @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     // Get all the notifications for a certain employee with an ID
     @GetMapping("/{id}")
     public List<Notification> getNotificationByUserId(@PathVariable Long id) {
         System.out.println("Hello");
         return notificationService.findByUserId(id);
+    }
+
+    //Update the isRead field to true in notifications.
+    @PutMapping("/isRead/{id}")
+    public Notification updateisRead(@PathVariable Long id){
+        Notification notificationbyId = notificationRepository.getNotification(id);
+        notificationbyId.setRead(true);
+        return notificationRepository.save(notificationbyId);
     }
 
     // Create the notification for an employee notifying him/her that a job has been assigned to him/her

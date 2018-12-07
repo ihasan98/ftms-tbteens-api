@@ -27,7 +27,6 @@ public class TaskController {
         try {
             Timesheet timesheet = timesheetRepository.getOne(timesheet_id);
             List<Task> tasks = taskRepository.findByTimesheet(timesheet);
-            System.out.println(tasks);
             return new ResponseEntity<Object>(tasks, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<Object>(new ApiResponse(false,

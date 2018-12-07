@@ -1,15 +1,22 @@
 package com.ftms.ftmsapi.controller;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+import com.ftms.ftmsapi.model.Employee;
 import com.ftms.ftmsapi.model.Timesheet;
+import com.ftms.ftmsapi.payload.ApiResponse;
+import com.ftms.ftmsapi.repository.EmployeeRepository;
 import com.ftms.ftmsapi.repository.TimesheetRepository;
 import com.ftms.ftmsapi.model.Job;
 import com.ftms.ftmsapi.repository.JobRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,16 +29,8 @@ public class TimesheetController {
     @Autowired
     JobRepository jobRepository;
 
-    /**
-     * Saving the Timesheet timesheet to the database.
-     *
-     * @param timesheet The timesheet we wants to save to the database.
-     * @return The timesheet saved.
-     */
-    @PostMapping("/save")
-    public Timesheet createTimesheet(@Valid @RequestBody Timesheet timesheet) {
-        return timesheetRepository.save(timesheet);
-    }
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     /**
      * Get all the timesheets in a list.
@@ -55,20 +54,67 @@ public class TimesheetController {
     }
 
     //Get timesheet from job and employee id
-    @GetMapping("/timesheets/{employee_id}/{job_id}")
-    public List<Timesheet> getTimesheetByEmployeeAndJobId(@PathVariable Long employee_id, @PathVariable Long job_id){
-        return timesheetRepository.findTimesheetFromEmployeeIdAndJobId(employee_id, job_id);}
+    @GetMapping("/timesheets/{employeeID}/{jobID}")
+    public ResponseEntity getTimesheetByEmployeeAndJobId(@PathVariable Long employeeID, @PathVariable Long jobID) {
+        //Making sure the jobID and employeeID are correct.
+        try {
+            Employee employee = employeeRepository.getOne(employeeID);
+            Job job = jobRepository.getOne(jobID);
+            List<Timesheet> foundTimesheets = timesheetRepository.findByEmployeeAndJob(employee, job);
+            return new ResponseEntity<Object>(foundTimesheets, HttpStatus.OK);
 
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Employee/Job not found!"), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @GetMapping("/timesheets/{jobID}")
+    public List<Timesheet> getTimesheetByJobs(@PathVariable Long jobID){
+        List<Timesheet> timesheets = timesheetRepository.findAll();
+        List<Timesheet> jobTimesheet = new ArrayList<>();
+        for (Timesheet timesheet: timesheets){
+            if (timesheet.getJob().getId().equals(jobID))
+                jobTimesheet.add(timesheet);
+        }
+        return jobTimesheet;
+    }
+
+    @GetMapping("/timesheets/employee/{employeeID}")
+    public List<Timesheet> getTimesheetByEmployee(@PathVariable Long employeeID){
+        List<Timesheet> timesheets = timesheetRepository.findAll();
+        List<Timesheet> employeeTimesheet = new ArrayList<>();
+        for (Timesheet timesheet: timesheets){
+            if (timesheet.getEmployee().getId().equals(employeeID))
+                employeeTimesheet.add(timesheet);
+        }
+        return employeeTimesheet;
+    }
+    
     /**
      * Approves a timesheet.
      *
      * @param timesheetId The ID of the timesheet to be approved.
      */
-    @PostMapping("/approve")
-    public void approve(Long timesheetId) {
-        Timesheet ts = timesheetRepository.getOne(timesheetId);
-        ts.setApprovalStatus("Approved");
-        timesheetRepository.save(ts);
+    @PutMapping("/timesheet/approve/{timesheetID}")
+    public ResponseEntity approveTimesheet(@PathVariable Long timesheetID) {
+        try{
+            Timesheet ts = timesheetRepository.getOne(timesheetID);
+            if (ts.getApprovalStatus() != 0){
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has already been reviewed!") , HttpStatus.BAD_REQUEST);
+            }
+            else{
+                ts.setApprovalStatus(2);
+                timesheetRepository.save(ts);
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                            "Timesheet has been reviewed!") , HttpStatus.OK);
+            }
+        }
+        catch (EntityNotFoundException error){
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has not been reviewed!") , HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -76,11 +122,26 @@ public class TimesheetController {
      *
      * @param timesheetId The ID of the timesheet to be rejected.
      */
-    @PostMapping("/reject")
-    public void reject(Long timesheetId) {
-        Timesheet ts = timesheetRepository.getOne(timesheetId);
-        ts.setApprovalStatus("Rejected");
-        timesheetRepository.save(ts);
+    @PutMapping("/timesheet/reject/{timesheetID}")
+    public ResponseEntity rejectTimesheet(@PathVariable Long timesheetID) {
+        System.out.println("ALSKDJLASJDK");
+        try{
+            Timesheet ts = timesheetRepository.getOne(timesheetID);
+            if (ts.getApprovalStatus() != 0){
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has already been reviewed!") , HttpStatus.BAD_REQUEST);
+            }
+            else{
+                ts.setApprovalStatus(1);
+                timesheetRepository.save(ts);
+                return new ResponseEntity<Object>(new ApiResponse(false,
+                            "Timesheet has been reviewed!") , HttpStatus.OK);
+            }
+        }
+        catch (EntityNotFoundException error){
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                        "Timesheet has not been reviewed!") , HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
