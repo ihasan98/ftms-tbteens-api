@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -85,8 +84,14 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/tasksById/{id}")
-    public Optional<Task> getTaskById(@PathVariable long id){
-        return taskRepository.findById(id);
+    @GetMapping("/taskById/{id}")
+    public ResponseEntity getTaskById(@PathVariable long id){
+        try {
+            Task task = taskRepository.getOne(id);
+            return new ResponseEntity<Object>(task, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<Object>(new ApiResponse(false,
+                    "Task not found!"), HttpStatus.BAD_REQUEST);
+        }
     }
 }
