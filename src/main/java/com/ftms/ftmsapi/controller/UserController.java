@@ -15,11 +15,14 @@ public class UserController {
 
     @GetMapping("/me")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        System.out.println(currentUser.getEmail());
+        System.out.println(currentUser.getUsername());
         Long companyId = (currentUser.getCompany() != null) ?
                 currentUser.getCompany().getId() : null;
         UserSummary userSummary = new UserSummary(currentUser.getId(),
-                currentUser.getUsername(), currentUser.getFirstname(),
-                currentUser.getLastname(), currentUser.getRole(), companyId);
+                currentUser.getEmail(), currentUser.getFirstname(),
+                currentUser.getLastname(), currentUser.getRole(), currentUser.getNumber(),
+                companyId);
         return userSummary;
     }
 }

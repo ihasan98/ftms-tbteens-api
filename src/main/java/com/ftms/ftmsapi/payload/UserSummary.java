@@ -6,17 +6,19 @@ public class UserSummary {
     private Long id;
     private String email;
     private String fname;
+    private String number;
     private String lname;
     private String role;
     private Long company;
 
     public UserSummary(Long id, String email, String fname, String lname,
-                       String role, Long company) {
+                       String role, String number, Long company) {
         this.id = id;
         this.email = email;
         this.fname = fname;
         this.lname = lname;
         this.role = role;
+        this.number = number;
         this.company = company;
     }
 
@@ -59,6 +61,10 @@ public class UserSummary {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getNumber() { return number; }
+
+    public void setNumber(String number) { this.number = number; }
 
     public Long getCompany() {
         return company;

@@ -98,7 +98,7 @@ public class EmployeeController {
     }
 
     // Edit an employee
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("")
     public ResponseEntity<?> editEmployee (@Valid @RequestBody String info) {
         // Parse string into JSON
