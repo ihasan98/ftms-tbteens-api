@@ -85,7 +85,7 @@ public class RecoveryCodeService {
         System.out.println("sending code");
         User user = userRepository.getOne(userID);
         String email = user.getEmail();
-        String name = user.getFirstname();
+        String name = user.getFirstName();
 
         String content = emailService.getRecoveryByEmailContent(name, code);
 

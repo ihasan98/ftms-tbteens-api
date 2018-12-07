@@ -62,8 +62,8 @@ public class RecoveryController {
         // Look for the user with the phone, first name and last name combo as above
         for (User user: userRepository.findAll()) {
             if (user.getNumber().equals(phone) &&
-                    user.getFirstname().equals(firstName) &&
-                        user.getLastname().equals(lastName)) {
+                    user.getFirstName().equals(firstName) &&
+                        user.getLastName().equals(lastName)) {
                 // Found gives OK response
                 return new ResponseEntity<Object>(new ApiResponse(true, "User found. Proceed below!"),
                         HttpStatus.OK);
@@ -94,7 +94,7 @@ public class RecoveryController {
     }
 
     @GetMapping("/getemail/{id}")
-    public HashMap<String, Object> retrieveEmail(@PathVariable Long id) {
+    public HashMap<String, Object> getEmailByUserID(@PathVariable Long id) {
         try {
             String email = userRepository.getOne(id).getEmail();
             HashMap<String, Object> result = new HashMap<>();
@@ -111,27 +111,27 @@ public class RecoveryController {
     }
 
     @PostMapping("/getuserid/name")
-    public ResponseEntity<?> getUserIdByName(@Valid @RequestBody String names) {
+    public ResponseEntity<?> getUserIDByName(@Valid @RequestBody String names) {
         JSONObject userInfo = new JSONObject(names);
         String firstName = userInfo.get("firstname").toString();
         String lastName = userInfo.get("lastname").toString();
 
         for (User user : userRepository.findAll()) {
-            if (user.getFirstname().equals(firstName) && user.getLastname().equals(lastName)) {
-                return new ResponseEntity<>(user.getId(), HttpStatus.OK);
+            if (user.getFirstName().equals(firstName) && user.getLastName().equals(lastName)) {
+                return new ResponseEntity<>(user.getID(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/getuserid/email")
-    public ResponseEntity<?> getUserIdByEmail(@Valid @RequestBody String email) {
+    public ResponseEntity<?> getUserIDByEmail(@Valid @RequestBody String email) {
         JSONObject userInfo = new JSONObject(email);
         String emailInfo = userInfo.get("email").toString();
 
         for (User user : userRepository.findAll()) {
             if (user.getEmail().equals(emailInfo)) {
-                return new ResponseEntity<>(user.getId(), HttpStatus.OK);
+                return new ResponseEntity<>(user.getID(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -156,8 +156,8 @@ public class RecoveryController {
             user.setPassword(passwordEncoder.encode(passwordEntered));
 
             userRepository.save(user);
-            String content = emailService.getPasswordChangedContent(user.getFirstname());
-            emailService.sendEmail(user.getFirstname(), user.getEmail(), content, "Account Information Changed");
+            String content = emailService.getPasswordChangedContent(user.getFirstName());
+            emailService.sendEmail(user.getFirstName(), user.getEmail(), content, "Account Information Changed");
             return new ResponseEntity<Object>(new ApiResponse(true,
                     "Password changed successfully!"),
                     HttpStatus.OK);

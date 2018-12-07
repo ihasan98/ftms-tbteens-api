@@ -11,16 +11,16 @@ public class UserTest {
     public void testFirstName(){
         User user = new User();
         String Firstname = "Elias";
-        user.setFirstname(Firstname);
-        assertEquals(user.getFirstname(), "Elias");
+        user.setFirstName(Firstname);
+        assertEquals(user.getFirstName(), "Elias");
     }
 
     @Test
     public void testLastName() {
         User user = new User();
         String Lastname = "Williams";
-        user.setLastname(Lastname);
-        assertEquals(user.getLastname(), "Williams");
+        user.setLastName(Lastname);
+        assertEquals(user.getLastName(), "Williams");
     }
 
     @Test

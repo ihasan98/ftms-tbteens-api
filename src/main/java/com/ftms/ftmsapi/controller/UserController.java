@@ -18,7 +18,7 @@ public class UserController {
         System.out.println(currentUser.getEmail());
         System.out.println(currentUser.getUsername());
         Long companyId = (currentUser.getCompany() != null) ?
-                currentUser.getCompany().getId() : null;
+                currentUser.getCompany().getID() : null;
         UserSummary userSummary = new UserSummary(currentUser.getId(),
                 currentUser.getEmail(), currentUser.getFirstname(),
                 currentUser.getLastname(), currentUser.getRole(), currentUser.getNumber(),

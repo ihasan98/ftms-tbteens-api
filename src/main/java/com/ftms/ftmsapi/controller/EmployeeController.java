@@ -72,10 +72,10 @@ public class EmployeeController {
     public Employee createEmployee(@Valid @RequestBody Employee employee) {
         // Hashing Employee id
         Employee createdEmployee = employeeRepository.save(employee);
-        String id = hashids.encode(createdEmployee.getId());
-        String content = emailService.getUserRegistrationContent(employee.getFirstname(),
+        String id = hashids.encode(createdEmployee.getID());
+        String content = emailService.getUserRegistrationContent(employee.getFirstName(),
                 "http://localhost:3000/usersignup/" + id);
-        emailService.sendEmail(employee.getFirstname(), employee.getEmail(), content,
+        emailService.sendEmail(employee.getFirstName(), employee.getEmail(), content,
                 "Nor-Weld FTMS Account Registration");
         return employeeRepository.save(createdEmployee);
     }
@@ -87,9 +87,9 @@ public class EmployeeController {
         try {
             // Try to look for employee by <id>
             Employee employee = employeeRepository.getOne(id);
-            employeeRepository.deleteById(employee.getId());
-            return new ResponseEntity<Object>(new ApiResponse(true, employee.getFirstname()
-                                    + " " + employee.getLastname() + " deleted!"), HttpStatus.OK);
+            employeeRepository.deleteById(employee.getID());
+            return new ResponseEntity<Object>(new ApiResponse(true, employee.getFirstName()
+                                    + " " + employee.getLastName() + " deleted!"), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             // If cannot find, return bad request response
             return new ResponseEntity<Object>(new ApiResponse(true, "This employee does not exist!"),
@@ -120,8 +120,8 @@ public class EmployeeController {
             Employee findEmployee = employeeRepository.getOne(id);
 
             // Success: set the info to new info
-            findEmployee.setFirstname(firstName);
-            findEmployee.setLastname(lastName);
+            findEmployee.setFirstName(firstName);
+            findEmployee.setLastName(lastName);
             findEmployee.setNumber(phone);
             employeeRepository.save(findEmployee);
             return new ResponseEntity<Object>(new ApiResponse(true, success), HttpStatus.OK);
@@ -132,7 +132,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}/jobs")
-    public ResponseEntity<?> retrieveJobsFromEmployee(@PathVariable Long id) {
+    public ResponseEntity<?> retrieveJobsByEmployeeID(@PathVariable Long id) {
         ArrayList<Job> jobs = new ArrayList<>();
         List<Timesheet> timesheets = timesheetRepository.findAll();
 
@@ -144,8 +144,8 @@ public class EmployeeController {
         }
         else {
             for (Timesheet timesheet : timesheets) {
-                if (timesheet.getEmployeeId().equals(id)) {
-                    Job job = jobRepository.findById(timesheet.getJobId()).orElse(null);
+                if (timesheet.getEmployeeID().equals(id)) {
+                    Job job = jobRepository.findById(timesheet.getJobID()).orElse(null);
                     jobs.add(job);
                 }
             }

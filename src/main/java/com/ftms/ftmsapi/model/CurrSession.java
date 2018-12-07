@@ -22,7 +22,7 @@ import java.io.Serializable;
         private Task task;
 
         // GETTERS/SETTERS
-        public Long getId(){
+        public Long getID(){
             return id;
         }
 

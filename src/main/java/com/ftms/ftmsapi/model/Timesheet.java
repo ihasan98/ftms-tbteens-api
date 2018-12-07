@@ -26,7 +26,7 @@ public class Timesheet implements Serializable{
     @JoinColumn(name = "job_id")
     private Job job;
 
-    public Long getId() {
+    public Long getID() {
         return id;
     }
 
@@ -58,15 +58,15 @@ public class Timesheet implements Serializable{
 
     // Returns the Employee ID of the employee associated with this timesheet.
     @JsonIgnore
-    public Long getEmployeeId() {
-        return employee.getId();
+    public Long getEmployeeID() {
+        return employee.getID();
     }
 
     
     // Returns the Job ID of the job that is associated with this task.
     @JsonIgnore
-    public Long getJobId() {
-        return job.getId();
+    public Long getJobID() {
+        return job.getID();
     }
 
     public int getApprovalStatus() {

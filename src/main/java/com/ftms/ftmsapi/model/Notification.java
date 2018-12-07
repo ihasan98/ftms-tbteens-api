@@ -35,11 +35,11 @@ public class Notification implements Serializable {
     }
 
 
-    public Long getNotificationId() {
+    public Long getNotificationID() {
         return notificationId;
     }
 
-    public void setNotificationId(Long notificationId) {
+    public void setNotificationID(Long notificationId) {
         this.notificationId = notificationId;
     }
 

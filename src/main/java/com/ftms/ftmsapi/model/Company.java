@@ -27,7 +27,7 @@ public class Company implements Serializable {
     @NotBlank
     private String number;
 
-    public Long getId() {
+    public Long getID() {
         return id;
     }
 

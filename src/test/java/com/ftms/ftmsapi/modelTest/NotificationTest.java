@@ -11,8 +11,8 @@ public class NotificationTest {
     Notification notification = new Notification();
     @Test
     public void testNotificationId() {
-        notification.setNotificationId(1000L);
-        assertEquals(notification.getNotificationId(), 1000L, 1000L );
+        notification.setNotificationID(1000L);
+        assertEquals(notification.getNotificationID(), 1000L, 1000L );
     }
 
     @Test

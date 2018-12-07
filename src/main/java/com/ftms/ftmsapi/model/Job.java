@@ -64,7 +64,7 @@ public class Job implements Serializable{
      *
      * @return The id.
      */
-    public Long getId() {
+    public Long getID() {
         return id;
     }
 

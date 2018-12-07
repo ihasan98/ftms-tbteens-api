@@ -44,13 +44,13 @@ public class ClientUserController {
 
     // Get all client users of company
     @GetMapping("/{companyId}")
-    public List<ClientUser> getAllclientUsersOfCompany(@PathVariable Long companyId) {
+    public List<ClientUser> getAllclientUsersByCompanyID(@PathVariable Long companyId) {
         ArrayList<ClientUser> users = (ArrayList<ClientUser>) clientUserRepository.findAll();
         ArrayList<ClientUser> nonAdmin = new ArrayList<>();
         // For every ClientUser
         for (ClientUser user: users) {
             // if user in company
-            if (user.getCompany().getId().equals(companyId)) {
+            if (user.getCompany().getID().equals(companyId)) {
                 // add to list of users to display
                 nonAdmin.add(user);
             }
@@ -63,7 +63,7 @@ public class ClientUserController {
     public ClientUser createClientUser(@Valid @RequestBody ClientUser user) {
         // Hashing ClientUser id
         ClientUser createdUser = clientUserRepository.save(user);
-        String id = hashids.encode(createdUser.getId());
+        String id = hashids.encode(createdUser.getID());
 
         emailService.prepareAndSend(createdUser.getEmail(),
                 "Account Activation",
@@ -79,8 +79,8 @@ public class ClientUserController {
             // Try to look for client user by <id>
             ClientUser clientUser = clientUserRepository.getOne(id);
             clientUserRepository.delete(clientUser);
-            return new ResponseEntity<Object>(new ApiResponse(true, clientUser.getFirstname()
-                    + " " + clientUser.getLastname() + " deleted!"), HttpStatus.OK);
+            return new ResponseEntity<Object>(new ApiResponse(true, clientUser.getFirstName()
+                    + " " + clientUser.getLastName() + " deleted!"), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             // If cannot find, return bad request response
             return new ResponseEntity<Object>(new ApiResponse(true, "This client user does not exist!"),
@@ -111,8 +111,8 @@ public class ClientUserController {
             ClientUser findClientUser = clientUserRepository.getOne(id);
 
             // Success: set the info to new info
-            findClientUser.setFirstname(firstName);
-            findClientUser.setLastname(lastName);
+            findClientUser.setFirstName(firstName);
+            findClientUser.setLastName(lastName);
             findClientUser.setNumber(phone);
             findClientUser.setCompany(company);
             clientUserRepository.save(findClientUser);

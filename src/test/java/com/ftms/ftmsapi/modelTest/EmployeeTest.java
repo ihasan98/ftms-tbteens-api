@@ -11,16 +11,16 @@ public class EmployeeTest {
     public void testFirstName(){
         Employee employee = new Employee();
         String Firstname = "Elias";
-        employee.setFirstname(Firstname);
-        assertEquals(employee.getFirstname(), "Elias");
+        employee.setFirstName(Firstname);
+        assertEquals(employee.getFirstName(), "Elias");
     }
 
     @Test
     public void testLastName() {
         Employee employee = new Employee();
         String Lastname = "Williams";
-        employee.setLastname(Lastname);
-        assertEquals(employee.getLastname(), "Williams");
+        employee.setLastName(Lastname);
+        assertEquals(employee.getLastName(), "Williams");
     }
 
     @Test

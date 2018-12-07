@@ -1,6 +1,5 @@
 package com.ftms.ftmsapi.controller;
 
-import com.ftms.ftmsapi.model.Job;
 import com.ftms.ftmsapi.model.Notification;
 import com.ftms.ftmsapi.model.User;
 import com.ftms.ftmsapi.payload.ApiResponse;
@@ -13,8 +12,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -39,14 +36,14 @@ public class NotificationController {
 
     // Get all the notifications for a certain employee with an ID
     @GetMapping("/{id}")
-    public List<Notification> getNotificationByUserId(@PathVariable Long id) {
+    public List<Notification> getNotificationByUserID(@PathVariable Long id) {
         System.out.println("Hello");
         return notificationService.findByUserId(id);
     }
 
     //Update the isRead field to true in notifications.
     @PutMapping("/isRead/{id}")
-    public Notification updateisRead(@PathVariable Long id){
+    public Notification updateIsRead(@PathVariable Long id){
         Notification notificationbyId = notificationRepository.getNotification(id);
         notificationbyId.setRead(true);
         return notificationRepository.save(notificationbyId);
@@ -54,14 +51,14 @@ public class NotificationController {
 
     // Create the notification for an employee notifying him/her that a job has been assigned to him/her
     @PostMapping("/jobassigned")
-    public ResponseEntity<?> createNewNotificationJobAssign(@Valid @RequestBody String info) {
+    public ResponseEntity<?> createJobAssignmentNotification(@Valid @RequestBody String info) {
         ArrayList<Object> validationResult = validateInfo(info);
         return getJobNotification(validationResult, ") has been assigned to you.", "JOB_ASSIGN");
     }
 
     // Create the notification for an employee notifying him/her that a job has been removed from him/her
     @PostMapping("/jobdeleted")
-    public ResponseEntity<?> createNewNotificationJobDeleted(@Valid @RequestBody String info) {
+    public ResponseEntity<?> createJobDeletionNotification(@Valid @RequestBody String info) {
         ArrayList<Object> validationResult = validateInfo(info);
         return getJobNotification(validationResult, ") has been removed from your queue.", "JOB_DELETE");
     }
@@ -165,7 +162,7 @@ public class NotificationController {
 
     // Delete a notification by looking for it by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteNotificationById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteNotificationByID(@PathVariable Long id) {
         try {
             Notification notification = notificationService.getRepository().getOne(id);
             notificationService.getRepository().delete(notification);

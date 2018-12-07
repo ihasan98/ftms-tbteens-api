@@ -1,8 +1,6 @@
 package com.ftms.ftmsapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,7 +33,7 @@ public class Task implements Serializable{
      *
      * @return The ID of this.
      */
-    public Long getId() {
+    public Long getID() {
         return id;
     }
 

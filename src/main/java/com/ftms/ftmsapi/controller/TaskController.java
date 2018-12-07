@@ -23,7 +23,7 @@ public class TaskController {
     TaskRepository taskRepository;
 
     @GetMapping("/timesheets/{timesheet_id}/tasks")
-    public ResponseEntity getTasksByTimesheet(@PathVariable Long timesheet_id) {
+    public ResponseEntity getTasksByTimesheetID(@PathVariable Long timesheet_id) {
         try {
             Timesheet timesheet = timesheetRepository.getOne(timesheet_id);
             List<Task> tasks = taskRepository.findByTimesheet(timesheet);
