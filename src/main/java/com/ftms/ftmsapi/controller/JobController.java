@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import com.ftms.ftmsapi.model.*;
 import com.ftms.ftmsapi.payload.ApiResponse;
 import com.ftms.ftmsapi.payload.CreateJob;
+import com.ftms.ftmsapi.payload.Time;
 import com.ftms.ftmsapi.repository.*;
 
 import com.ftms.ftmsapi.services.EmailService;
@@ -181,6 +182,18 @@ public class JobController {
             }
         }
         return employees;
+    }
+
+    @GetMapping("/jobs/getfromemployee/{id}")
+    public List<Job> retrieveJobsFromEmployee(@PathVariable Long id) {
+        ArrayList<Job> jobs = new ArrayList<>();
+
+        for (Timesheet timesheet : timesheetRepository.findAll()) {
+            if (timesheet.getEmployeeId().equals(id)) {
+                jobs.add(timesheet.getJob());
+            }
+        }
+        return jobs;
     }
 
     /**
